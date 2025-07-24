@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Installing Debian Developer Environment..."
+
+# Run the main setup script
+/usr/share/debian-dev-setup/dev-setup.sh
+
+echo "✅ Debian Developer Environment installation completed!"
+echo "📋 Please follow the post-installation steps shown above."

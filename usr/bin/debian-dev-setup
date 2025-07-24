@@ -1,0 +1,25 @@
+#!/bin/bash
+# Debian Developer Setup - Command line interface
+
+case "$1" in
+    install|setup)
+        echo "🚀 Running Debian Developer Environment Setup..."
+        sudo /usr/share/debian-dev-setup/dev-setup.sh
+        ;;
+    help|--help|-h)
+        echo "Debian Developer Setup - Complete development environment"
+        echo ""
+        echo "Usage: debian-dev-setup [command]"
+        echo ""
+        echo "Commands:"
+        echo "  install, setup    Run the complete development environment setup"
+        echo "  help             Show this help message"
+        echo ""
+        echo "For more information, see: /usr/share/doc/debian-dev-setup/README.md"
+        ;;
+    *)
+        echo "Usage: debian-dev-setup {install|setup|help}"
+        echo "Run 'debian-dev-setup help' for more information."
+        exit 1
+        ;;
+esac
