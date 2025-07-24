@@ -1,0 +1,21 @@
+Package: debian-dev-setup
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: curl, wget, apt-transport-https, ca-certificates, gnupg, lsb-release, software-properties-common
+Maintainer: GHOST117s <your-email@example.com>
+Description: Complete Debian Developer Environment Setup
+ This package installs a comprehensive development environment for Debian-based
+ systems including PHP 8.2 with Laravel, Node.js via NVM, Python 3, VS Code,
+ Docker, Redis, MySQL Workbench, and many other essential development tools.
+ .
+ Features:
+  - Automatic Docker container management
+  - PHP 8.2 with Laravel extensions and Redis support
+  - Node.js LTS via NVM
+  - VS Code with Fira Code font and extensions
+  - Database tools (MySQL Workbench, HeidiSQL, DBeaver, Redis)
+  - API testing tools (Postman, Insomnia)
+  - Enhanced terminal (Oh My Zsh, Terminator)
+  - Media and communication tools (VLC, Firefox Dev, Discord, Spotify)

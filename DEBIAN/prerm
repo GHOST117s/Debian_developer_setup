@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+echo "🧹 Removing Debian Developer Environment files..."
+
+# Remove the setup script and related files
+rm -rf /usr/share/debian-dev-setup/
+
+echo "✅ Debian Developer Environment files removed."
