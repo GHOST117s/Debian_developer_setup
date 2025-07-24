@@ -16,6 +16,12 @@ sudo apt update && sudo apt upgrade -y
 echo "📦 Installing essential tools first..."
 sudo apt install -y curl wget
 
+# Fira Code Font (Programming Font with Ligatures)
+echo "🔤 Installing Fira Code font..."
+sudo apt install -y fonts-firacode
+fc-cache -f -v
+echo "✅ Fira Code font installed with programming ligatures"
+
 # Docker & Docker Compose
 echo "🐳 Installing Docker and Docker Compose..."
 sudo apt install -y ca-certificates curl gnupg lsb-release
@@ -34,7 +40,7 @@ sudo apt install -y curl wget git unzip gnupg software-properties-common apt-tra
 echo "🐘 Installing PHP 8.2 and extensions..."
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
-sudo apt install -y php8.2 php8.2-cli php8.2-common php8.2-mysql php8.2-xml php8.2-mbstring php8.2-curl php8.2-zip php8.2-bcmath php8.2-gd php8.2-soap php8.2-intl php8.2-readline
+sudo apt install -y php8.2 php8.2-cli php8.2-common php8.2-mysql php8.2-xml php8.2-mbstring php8.2-curl php8.2-zip php8.2-bcmath php8.2-gd php8.2-soap php8.2-intl php8.2-readline php8.2-redis
 
 # Composer & Laravel Installer
 echo "🎼 Installing Composer & Laravel installer..."
@@ -74,8 +80,34 @@ formulahendry.auto-close-tag
 dbaeumer.vscode-eslint
 ms-python.python
 esbenp.prettier-vscode
+ms-vscode.vscode-json
+bradlc.vscode-tailwindcss
+ms-vscode-remote.remote-containers
+gitpod.gitpod-desktop
 EOF
 echo "📝 VS Code extensions list saved to ~/vscode-extensions.txt"
+
+# Create VS Code settings with Fira Code font
+echo "⚙️  Creating VS Code settings with Fira Code..."
+mkdir -p ~/.config/Code/User
+cat > ~/.config/Code/User/settings.json << EOF
+{
+    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.5,
+    "terminal.integrated.fontFamily": "'Fira Code', monospace",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.minimap.enabled": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false
+}
+EOF
+echo "📝 VS Code configured with Fira Code font and ligatures"
 
 # Postman (via snap)
 echo "📮 Installing Postman..."
@@ -84,6 +116,21 @@ sudo snap install postman
 # MySQL Workbench
 echo "🛢 Installing MySQL Workbench..."
 sudo apt install -y mysql-workbench
+
+# Redis
+echo "🔴 Installing Redis Server..."
+sudo apt install -y redis-server
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
+echo "✅ Redis installed and started (Port: 6379)"
+
+# Verify PHP Redis extension
+echo "🔍 Verifying PHP Redis extension..."
+if php -m | grep -q redis; then
+    echo "✅ PHP Redis extension loaded successfully"
+else
+    echo "⚠️  PHP Redis extension not found - you may need to restart PHP services"
+fi
 
 # HeidiSQL (via Wine)
 echo "🍷 Installing Wine & HeidiSQL..."
@@ -109,6 +156,45 @@ echo "💬 Installing Discord..."
 wget -O discord.deb "https://discord.com/api/download?platform=linux&format=deb"
 sudo apt install -y ./discord.deb
 rm discord.deb
+
+# Additional Development Tools
+echo "🛠️  Installing additional development tools..."
+
+# DBeaver (Universal Database Tool)
+echo "🗄️  Installing DBeaver..."
+wget -O dbeaver.deb "https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb"
+sudo apt install -y ./dbeaver.deb
+rm dbeaver.deb
+
+# Git GUI tools
+echo "🌳 Installing Git GUI tools..."
+sudo apt install -y gitg git-cola
+
+# Oh My Zsh (Enhanced terminal)
+echo "🐚 Installing Oh My Zsh..."
+sudo -u $SUDO_USER bash -c 'sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
+sudo -u $SUDO_USER bash -c 'git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions'
+sudo -u $SUDO_USER bash -c 'git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting'
+
+# Insomnia (REST API Client - Alternative to Postman)
+echo "😴 Installing Insomnia..."
+curl -1sLf 'https://dl.cloudsmith.io/public/insomnia/core/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/insomnia.gpg
+echo "deb [signed-by=/usr/share/keyrings/insomnia.gpg arch=amd64] https://dl.cloudsmith.io/public/insomnia/core/deb/ubuntu focal main" | sudo tee /etc/apt/sources.list.d/insomnia.list
+sudo apt update
+sudo apt install -y insomnia
+
+# Terminator (Advanced Terminal)
+echo "🖥️  Installing Terminator..."
+sudo apt install -y terminator
+
+# Spotify (Music Streaming)
+echo "🎵 Installing Spotify..."
+curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+sudo apt update
+sudo apt install -y spotify-client
+
+echo "✅ Additional development tools installed!"
 
 # Clone and Compose Docker Repos
 echo "🐙 Cloning your Docker GitHub repos..."
