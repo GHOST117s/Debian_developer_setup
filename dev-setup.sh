@@ -1,10 +1,31 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Ubuntu Dev Environment Setup..."
+# Check if running on Debian-based system
+if ! command -v apt &> /dev/null; then
+    echo "❌ This script requires a Debian-based system with apt package manager"
+    exit 1
+fi
+
+echo "🚀 Starting Debian Dev Environment Setup..."
 
 echo "🔄 Updating and Upgrading system..."
 sudo apt update && sudo apt upgrade -y
+
+# Ensure essential tools are available
+echo "📦 Installing essential tools first..."
+sudo apt install -y curl wget
+
+# Docker & Docker Compose
+echo "🐳 Installing Docker and Docker Compose..."
+sudo apt install -y ca-certificates curl gnupg lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo usermod -aG docker $USER
+echo "✅ Docker installed. You may need to log out and back in for group changes to take effect."
 
 echo "📦 Installing base packages..."
 sudo apt install -y curl wget git unzip gnupg software-properties-common apt-transport-https ca-certificates lsb-release build-essential zsh vlc python3 python3-pip
@@ -26,11 +47,11 @@ source ~/.bashrc
 # Node.js (via NVM)
 echo "🟢 Installing Node.js (LTS) via NVM..."
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-source "$NVM_DIR/nvm.sh"
-nvm install --lts
-nvm use --lts
-nvm alias default 'lts/*'
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.bashrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.bashrc
+# Install Node.js in a new shell session
+sudo -u $SUDO_USER bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm install --lts && nvm use --lts && nvm alias default "lts/*"'
 
 # VS Code
 echo "🖊 Installing VS Code..."
@@ -43,13 +64,18 @@ rm microsoft.gpg
 
 # Install VS Code extensions (Laravel/Node/etc.)
 echo "🧩 Installing VS Code Extensions..."
-code --install-extension onecentlin.laravel-blade
-code --install-extension bmewburn.vscode-intelephense-client
-code --install-extension xdebug.php-debug
-code --install-extension formulahendry.auto-close-tag
-code --install-extension dbaeumer.vscode-eslint
-code --install-extension ms-python.python
-code --install-extension esbenp.prettier-vscode
+echo "⚠️  Note: VS Code extensions will be available after first launch"
+# Create extensions list for user to install manually or via script later
+cat > ~/vscode-extensions.txt << EOF
+onecentlin.laravel-blade
+bmewburn.vscode-intelephense-client
+xdebug.php-debug
+formulahendry.auto-close-tag
+dbaeumer.vscode-eslint
+ms-python.python
+esbenp.prettier-vscode
+EOF
+echo "📝 VS Code extensions list saved to ~/vscode-extensions.txt"
 
 # Postman (via snap)
 echo "📮 Installing Postman..."
@@ -63,10 +89,13 @@ sudo apt install -y mysql-workbench
 echo "🍷 Installing Wine & HeidiSQL..."
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y wine64 wine32
-wget https://www.heidisql.com/downloads/releases/HeidiSQL_12.7_64_Portable.zip
-unzip HeidiSQL_12.7_64_Portable.zip -d ~/HeidiSQL
-echo "✅ HeidiSQL installed under ~/HeidiSQL (Run with Wine)"
+sudo apt install -y wine64 wine32 winetricks
+# Configure wine
+sudo -u $SUDO_USER bash -c 'winecfg' 2>/dev/null || echo "Wine configuration skipped (no display)"
+wget https://www.heidisql.com/downloads/releases/HeidiSQL_12.7_64_Portable.zip -O /tmp/HeidiSQL.zip
+sudo -u $SUDO_USER unzip /tmp/HeidiSQL.zip -d "$HOME/HeidiSQL"
+rm /tmp/HeidiSQL.zip
+echo "✅ HeidiSQL installed under ~/HeidiSQL (Run with: wine ~/HeidiSQL/heidisql.exe)"
 
 # Firefox Developer Edition
 echo "🦊 Installing Firefox Developer Edition..."
@@ -105,9 +134,18 @@ for DIR in "$REPO_BASE"/*; do
   if [ -f "$DIR/docker-compose.yml" ]; then
     echo "➡️ Starting $DIR"
     cd "$DIR"
-    docker-compose pull
-    docker-compose up -d
+    # Use docker compose (new syntax) instead of docker-compose
+    docker compose pull
+    docker compose up -d
   fi
 done
 
-echo "🎉 All done! Restart terminal or run: source ~/.bashrc"
+echo "🎉 All done! 
+
+📋 Next Steps:
+1. Restart your terminal or run: source ~/.bashrc
+2. Log out and back in for Docker group permissions
+3. Install VS Code extensions: cat ~/vscode-extensions.txt
+4. Configure Wine for HeidiSQL if needed
+
+🚀 Your development environment is ready!"
