@@ -11,16 +11,32 @@ This project provides a `.deb` package that installs a complete developer enviro
 
 ## Included Tools
 
-- **PHP 8.2** with Laravel extensions
+### Core Development
+- **PHP 8.2** with Laravel extensions + Redis support
 - **Node.js (LTS)** via nvm
 - **Python 3** with pip
-- **Visual Studio Code**
-- **VLC Media Player**
-- **Postman**
+- **Visual Studio Code** with Fira Code font and extensions
+- **Docker & Docker Compose** with auto-detection
+
+### Database & API Tools
 - **MySQL Workbench**
+- **Redis Server** (auto-start on boot)
 - **HeidiSQL** (via Wine)
+- **DBeaver** (Universal Database Tool)
+- **Postman** (API Testing)
+- **Insomnia** (Alternative REST API Client)
+
+### Development Utilities
+- **Git GUI tools** (gitg, git-cola)
+- **Oh My Zsh** with auto-suggestions and syntax highlighting
+- **Terminator** (Advanced Terminal)
+- **Fira Code font** with programming ligatures
+
+### Media & Communication
+- **VLC Media Player**
 - **Firefox Developer Edition**
 - **Discord**
+- **Spotify** (Music Streaming)
 
 ## Installation
 
@@ -36,6 +52,7 @@ This project provides a `.deb` package that installs a complete developer enviro
 
 - After installation, you can start developing immediately.
 - Place your projects with `docker-compose.yml` files in your workspace; the setup will help you run them with Docker.
+- Redis server runs on default port 6379 and starts automatically on boot.
 
 ## Requirements
 
@@ -46,8 +63,9 @@ This project provides a `.deb` package that installs a complete developer enviro
 
 - HeidiSQL is installed via Wine for compatibility.
 - Node.js is managed via nvm for easy version switching.
+- Redis server is configured to start automatically on system boot.
 - All tools are installed with default settings; you can customize them post-installation.
 
 ## License
 
-**MIT**
+MIT
